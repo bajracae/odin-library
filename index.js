@@ -36,10 +36,31 @@ function displayBooks() {
 		pages.textContent = book.pages;
 		const read = document.createElement("h1");
 		read.textContent = book.read;
+
+		const updateReadButton = document.createElement("button");
+		updateReadButton.textContent = "Update Read Status";
+		updateReadButton.addEventListener("click", () => {
+			if (book.read == "Have read") {
+				book.read = "Have not read";
+				read.textContent = "Have not read";
+			} else {
+				book.read = "Have read";
+				read.textContent = "Have read";
+			}
+		});
+
+		const removeButton = document.createElement("button");
+		removeButton.textContent = "X";
+		removeButton.addEventListener("click", () => {
+			card.remove();
+		});
+
 		card.appendChild(title);
 		card.appendChild(author);
 		card.appendChild(pages);
 		card.appendChild(read);
+		card.appendChild(updateReadButton);
+		card.appendChild(removeButton);
 		container.appendChild(card);
 	});
 }
@@ -65,14 +86,45 @@ function closeModal() {
 		const obj = Object.fromEntries(formData);
 		addBookToLibrary(obj.title, obj.author, obj.pages, obj.read);
 		dialog.close();
-		console.log(myLibrary);
+
 		const container = document.querySelector("#container");
 		const card = document.createElement("div");
 		card.classList.add("card");
 		const title = document.createElement("h1");
 		card.appendChild(title);
+		const author = document.createElement("h1");
+		card.appendChild(author);
+		const pages = document.createElement("h1");
+		card.appendChild(pages);
+		const read = document.createElement("h1");
+		card.appendChild(read);
+
+		const updateReadButton = document.createElement("button");
+		updateReadButton.textContent = "Update Read Status";
+		updateReadButton.addEventListener("click", () => {
+			if (obj.read == "Have read") {
+				obj.read = "Have not read";
+				read.textContent = "Have not read";
+			} else {
+				obj.read = "Have read";
+				read.textContent = "Have read";
+			}
+		});
+
+		const removeButton = document.createElement("button");
+		removeButton.textContent = "X";
+		removeButton.addEventListener("click", () => {
+			card.remove();
+		});
 
 		title.textContent = obj.title;
+		author.textContent = obj.author;
+		pages.textContent = obj.pages;
+		read.textContent = obj.read;
+		card.appendChild(updateReadButton);
+
+		card.appendChild(removeButton);
+
 		container.appendChild(card);
 	});
 }
