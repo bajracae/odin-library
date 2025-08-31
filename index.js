@@ -21,37 +21,45 @@ function addBookToLibrary(title, author, pages, read) {
 
 function displayBooks() {
 	const container = document.querySelector("#container");
-	// addBookToLibrary("The Book", "Izin", "200 pages", "Have read");
-	// addBookToLibrary("Another Book", "Izin", "200 pages", "Have read");
-	// addBookToLibrary("Worst Book", "Izin", "200 pages", "Have read");
+	const cards = document.querySelector("#cards");
+	cards.innerHTML = "";
+
 	myLibrary.forEach((book) => {
-		console.log("here");
 		const card = document.createElement("div");
 		card.classList.add("card");
+
 		const title = document.createElement("h1");
-		title.textContent = book.title;
-		const author = document.createElement("h1");
-		author.textContent = book.author;
-		const pages = document.createElement("h1");
-		pages.textContent = book.pages;
-		const read = document.createElement("h1");
-		read.textContent = book.read;
+		title.textContent = `${book.title}`;
+
+		const author = document.createElement("h2");
+		author.textContent = `${book.author}`;
+
+		const pages = document.createElement("h3");
+		pages.textContent = `${book.pages}`;
+
+		const read = document.createElement("h3");
+		read.textContent = `${book.read}`;
 
 		const updateReadButton = document.createElement("button");
-		updateReadButton.textContent = "Update Read Status";
+		updateReadButton.textContent = "Update Status";
 		updateReadButton.addEventListener("click", () => {
-			if (book.read == "Have read") {
-				book.read = "Have not read";
-				read.textContent = "Have not read";
+			if (book.read == "Read") {
+				book.read = "Not Read";
 			} else {
-				book.read = "Have read";
-				read.textContent = "Have read";
+				book.read = "Read";
 			}
+			read.textContent = `${book.read}`;
 		});
 
 		const removeButton = document.createElement("button");
-		removeButton.textContent = "X";
+		removeButton.textContent = "Delete";
 		removeButton.addEventListener("click", () => {
+			const index = myLibrary
+				.map((x) => {
+					return x.id;
+				})
+				.indexOf(book.id);
+			myLibrary.splice(index, 1);
 			card.remove();
 		});
 
@@ -61,74 +69,40 @@ function displayBooks() {
 		card.appendChild(read);
 		card.appendChild(updateReadButton);
 		card.appendChild(removeButton);
-		container.appendChild(card);
+		cards.appendChild(card);
 	});
+	container.appendChild(cards);
 }
 
-function openModal() {
-	const dialog = document.querySelector("dialog");
-	const showButton = document.querySelector("dialog + button");
+const dialog = document.querySelector("dialog");
 
-	// "Show the dialog" button opens the dialog modally
-	showButton.addEventListener("click", () => {
-		console.log("show button clicked!");
+function modalButtons() {
+	const openModalButton = document.querySelector("#open-btn");
+	openModalButton.addEventListener("click", () => {
 		dialog.showModal();
 	});
-}
 
-function closeModal() {
-	const dialog = document.querySelector("dialog");
-
-	const form = document.querySelector("form");
-	form.addEventListener("submit", (event) => {
-		event.preventDefault();
-		const formData = new FormData(form);
-		const obj = Object.fromEntries(formData);
-		addBookToLibrary(obj.title, obj.author, obj.pages, obj.read);
+	const closeModalButton = document.querySelector("#close-btn");
+	closeModalButton.addEventListener("click", () => {
 		dialog.close();
-
-		const container = document.querySelector("#container");
-		const card = document.createElement("div");
-		card.classList.add("card");
-		const title = document.createElement("h1");
-		card.appendChild(title);
-		const author = document.createElement("h1");
-		card.appendChild(author);
-		const pages = document.createElement("h1");
-		card.appendChild(pages);
-		const read = document.createElement("h1");
-		card.appendChild(read);
-
-		const updateReadButton = document.createElement("button");
-		updateReadButton.textContent = "Update Read Status";
-		updateReadButton.addEventListener("click", () => {
-			if (obj.read == "Have read") {
-				obj.read = "Have not read";
-				read.textContent = "Have not read";
-			} else {
-				obj.read = "Have read";
-				read.textContent = "Have read";
-			}
-		});
-
-		const removeButton = document.createElement("button");
-		removeButton.textContent = "X";
-		removeButton.addEventListener("click", () => {
-			card.remove();
-		});
-
-		title.textContent = obj.title;
-		author.textContent = obj.author;
-		pages.textContent = obj.pages;
-		read.textContent = obj.read;
-		card.appendChild(updateReadButton);
-
-		card.appendChild(removeButton);
-
-		container.appendChild(card);
 	});
 }
 
+const form = document.querySelector("form");
+form.addEventListener("submit", (event) => {
+	event.preventDefault();
+	const formData = new FormData(form);
+	const obj = Object.fromEntries(formData);
+	addBookToLibrary(obj.title, obj.author, obj.pages, obj.read);
+	displayBooks();
+	form.reset();
+	dialog.close();
+});
+
+addBookToLibrary("The Book", "Izin", "200 pages", "Not Read");
+addBookToLibrary("Another Book", "Izin", "200 pages", "Read");
+addBookToLibrary("Worst Book", "Izin", "200 pages", "Read");
+addBookToLibrary("The Book", "Izin", "200 pages", "Not Read");
+addBookToLibrary("Another Book", "Izin", "200 pages", "Read");
 displayBooks();
-openModal();
-closeModal();
+modalButtons();
